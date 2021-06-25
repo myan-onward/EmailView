@@ -1,0 +1,11 @@
+@page "/account/logout"
+@layout MainLayout
+@using EmailView.DataServices
+@inject IMAPService MailService
+
+@code {
+    protected override async void OnInitialized()
+    {
+        await MailService.Logout();
+    }
+}

@@ -1,0 +1,26 @@
+@page "/"
+
+@using EmailView.DataServices
+@inject IMAPService MailService
+
+@if (LoggedIn == false)
+{
+    <p>Not logged into a mailbox.</p>
+    <NavLink href="account/login" class="btn btn-link">Login</NavLink>
+}
+else
+{
+    <h1>Hello, emails!</h1>
+    <NavLink href="emails" class="btn btn-link">Emails (last 2 days)</NavLink>
+
+    <hr />
+    <NavLink href="https://github.com/myan-onward/" class="btn btn-link">myan-onward (GitHub)</NavLink>
+}
+
+@code
+{
+    public bool LoggedIn
+    {
+        get { return MailService.IsAuthenticated; }
+    }
+}

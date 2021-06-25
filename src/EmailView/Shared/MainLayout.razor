@@ -1,0 +1,46 @@
+@inherits LayoutComponentBase
+@using EmailView.DataServices
+@* @inject IAccountService AccountService *@
+@inject IMAPService MailService
+@inject NavigationManager NavigationManager
+
+@if (LoggedIn)
+{
+    <!-- nav -->
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="navbar-nav">
+            <NavLink href="" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
+            <NavLink href="emails" class="nav-item nav-link">Emails</NavLink>
+            <NavLink href="account/logout" class="nav-item nav-link">Logout</NavLink>
+        </div>
+    </nav>
+}
+
+<div class="app-container @(LoggedIn ? "bg-light" : "")">
+    <Alert />
+    @Body
+</div>
+
+@code {
+    public bool LoggedIn 
+    {
+        get { return MailService.IsAuthenticated; }
+    }
+}
+
+@* <div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div> *@
+

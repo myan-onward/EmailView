@@ -1,0 +1,37 @@
+@page "/emails"
+
+@if (LoggedIn == false)
+{
+    <p>Not logged into a mailbox.</p>
+    <NavLink href="account/login" class="btn btn-link">Login</NavLink>
+}
+else
+{
+    @if(messages == null)
+    {
+        <p><em>Loading emails...</em></p>
+    }
+    else
+    {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UId</th>
+                <th>From</th>
+                <th>Date</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize Items="@messages" Context="mi">
+                <tr>
+                    <td>@mi.Summary.UniqueId</td>
+                    <td>@mi.FromSimple</td>
+                    <td>@mi.Summary.Envelope.Date</td>
+                    <td>@mi.Summary.Envelope.Subject</td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+    }
+}

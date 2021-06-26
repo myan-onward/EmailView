@@ -1,11 +1,13 @@
 @page "/account/logout"
 @layout MainLayout
 @using EmailView.DataServices
+@inject NavigationManager NavigationManager
 @inject IMAPService MailService
 
 @code {
     protected override async void OnInitialized()
     {
         await MailService.Logout();
+        NavigationManager.NavigateTo("account/login");
     }
 }

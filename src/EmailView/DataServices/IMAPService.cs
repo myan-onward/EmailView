@@ -14,7 +14,6 @@ namespace EmailView.DataServices
 {
     public class IMAPService
     {
-        private NavigationManager _navigationManager;
         private static readonly ImapClient Client = new ImapClient();
         public static ICredentials Credentials;
 
@@ -44,6 +43,7 @@ namespace EmailView.DataServices
             var options = SecureSocketOptions.StartTlsWhenAvailable;
             // var host = serverCombo.Text.Trim ();
             var host = ImapServerFromDomain(emailAddress);
+            Console.WriteLine($"Address = {emailAddress}, Host = {host}");
             // var passwd = passwordTextBox.Text;
             // var user = loginTextBox.Text;
             // int port;
@@ -62,15 +62,16 @@ namespace EmailView.DataServices
             {
                 await ReconnectAsync(host, port, options);
             }
-            catch
+            catch(Exception ex)
             {
                 string msg = "Failed to Authenticate to server. If you are using GMail, then you probably " +
                     "need to go into your GMail settings to enable \"less secure apps\" in order " +
                     "to get this demo to work.\n\n" +
                     "For a real Mail application, you'll want to add support for obtaining the " +
                     "user's OAuth2 credentials to prevent the need for user's to enable this. ";
-                // Console.WriteLine(msg);
-                throw new Exception(msg);
+                Console.WriteLine(ex.Message);
+                Client.Disconnect(false);
+                throw ex;
             }
         }
 
@@ -104,8 +105,7 @@ namespace EmailView.DataServices
 
         public async Task Logout()
         {
-            await Client.DisconnectAsync(true);
-            _navigationManager.NavigateTo("account/login");
+            await Client.DisconnectAsync(true);            
         }
 
         #endregion Connection and Authentication
@@ -140,15 +140,15 @@ namespace EmailView.DataServices
 
         private string ImapServerFromDomain(string emailAddress)
         {
-            string domain = emailAddress.Substring(emailAddress.IndexOf('@'));
+            string domain = emailAddress.Substring(emailAddress.IndexOf('@') + 1);
             switch (domain)
             {
                 case "outlook.com":
-                    return "imap-mail.outlook.com";  // port 993
+                    return "outlook.office365.com";  // port 993
                 case "gmail.com":
                     return "imap.gmail.com";
                 case "yahoo.com":
-                    return "mail.yahoo.com";
+                    return "imap.mail.yahoo.com";
                 default:
                     return "imap-mail.outlook.com";  // port 993
             }

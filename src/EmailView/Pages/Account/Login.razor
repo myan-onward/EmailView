@@ -23,7 +23,7 @@
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
             <button disabled="@loading" class="btn btn-primary">
-                @if (loading) 
+                @if (loading)
                 {
                     <span class="spinner-border spinner-border-sm mr-1"></span>
                 }
@@ -31,6 +31,27 @@
             </button>
             @* <NavLink href="account/register" class="btn btn-link">Register</NavLink> *@
         </EditForm>
+    </div>
+</div>
+
+<div class="card">
+    <h4 class="card-header">Email Provider Information</h4>
+    <div class="card-body">
+        <div class="form-group">
+            <label>GMail</label>
+            <p>Can use email password.</p>
+            <NavLink href="https://support.google.com/mail/answer/7126229?hl=en&visit_id=637602647405043275-2883311825&rd=2" class="btn btn-link">IMAP Info</NavLink>
+        </div>
+        <div class="form-group">
+            <label>Outlook.com</label>
+            <p>Can use email password.</p>
+            <NavLink href="https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040" class="btn btn-link">IMAP Info</NavLink>
+        </div>
+        <div class="form-group">
+            <label>Yahoo!</label>
+            <p>REQUIRES a generated App Password.</p>
+            <NavLink href="https://en-global.help.yahoo.com/kb/SLN4075.html" class="btn btn-link">IMAP Info</NavLink>
+        </div>
     </div>
 </div>
 

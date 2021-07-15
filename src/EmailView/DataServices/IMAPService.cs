@@ -16,11 +16,12 @@ namespace EmailView.DataServices
     {
         private static readonly ImapClient Client = new ImapClient();
         public static ICredentials Credentials;
+        protected string _email;
 
         static Task CurrentTask = Task.FromResult(true);
 
 
-        const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Envelope | MessageSummaryItems.Flags | MessageSummaryItems.BodyStructure;
+        const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Envelope | MessageSummaryItems.Flags | MessageSummaryItems.BodyStructure | MessageSummaryItems.Headers;
         public List<MessageInfo> messages = new List<MessageInfo>();
         IMailFolder folder;
 
@@ -54,6 +55,7 @@ namespace EmailView.DataServices
             // 	port = 0; // default
 
             Credentials = new NetworkCredential(emailAddress, emailPassword);
+            _email = emailAddress;
 
             if (useSsl)
                 options = SecureSocketOptions.SslOnConnect;
@@ -62,16 +64,15 @@ namespace EmailView.DataServices
             {
                 await ReconnectAsync(host, port, options);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                string msg = "Failed to Authenticate to server. If you are using GMail, then you probably " +
-                    "need to go into your GMail settings to enable \"less secure apps\" in order " +
-                    "to get this demo to work.\n\n" +
-                    "For a real Mail application, you'll want to add support for obtaining the " +
-                    "user's OAuth2 credentials to prevent the need for user's to enable this. ";
+                // string msg = "Failed to Authenticate to server. If you are using GMail, then you probably " +
+                //     "need to go into your GMail settings to enable \"less secure apps\" .\n\n" +
+                //     "For a real Mail application, you'll want to add support for obtaining the " +
+                //     "user's OAuth2 credentials to prevent the need for user's to enable this. ";
                 Console.WriteLine(ex.Message);
                 Client.Disconnect(false);
-                throw ex;
+                throw;
             }
         }
 
@@ -105,35 +106,44 @@ namespace EmailView.DataServices
 
         public async Task Logout()
         {
-            await Client.DisconnectAsync(true);            
+            await Client.DisconnectAsync(true);
         }
 
         #endregion Connection and Authentication
 
         public async Task<List<MessageInfo>> GetMessagesAsync()
         {
-            if (Client.IsAuthenticated)
+            try
             {
-                OpenFolder(null);
-
-                messages.Clear();
-
-                if (!folder.IsOpen)
+                if (Client.IsAuthenticated)
                 {
-                    await folder.OpenAsync(FolderAccess.ReadOnly);
-                }
+                    OpenFolder(null);
 
-                if (folder.Count > 0)
-                {
-                    int daysBack = 2;
-                    var query = SearchQuery.DeliveredAfter(DateTime.UtcNow.AddDays(daysBack * -1));
+                    messages.Clear();
+
+                    if (!folder.IsOpen)
+                    {
+                        await folder.OpenAsync(FolderAccess.ReadOnly);
+                    }
+
+                    if (folder.Count > 0)
+                    {
+                        int daysBack = 7;
+                        var query = SearchQuery.DeliveredAfter(DateTime.UtcNow.AddDays(daysBack * -1));
                         // var orderBy = new[] { OrderBy.ReverseArrival };
-                    var uids = await folder.SearchAsync(query);
-                    var summaries = await folder.FetchAsync(uids, SummaryItems);
-                    AddMessageSummaries(summaries);
-                }
+                        var uids = await folder.SearchAsync(query);
+                        var summaries = await folder.FetchAsync(uids, SummaryItems);
+                        AddMessageSummaries(summaries);
+                    }
 
-                // folder.CountChanged += CountChanged;
+                    // folder.CountChanged += CountChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Client.Disconnect(false);
+                throw;
             }
             return messages;
         }
@@ -149,6 +159,8 @@ namespace EmailView.DataServices
                     return "imap.gmail.com";
                 case "yahoo.com":
                     return "imap.mail.yahoo.com";
+                case "icloud.com":
+                    return "imap.mail.me.com";
                 default:
                     return "imap-mail.outlook.com";  // port 993
             }

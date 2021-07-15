@@ -23,6 +23,7 @@ namespace EmailView
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<IMAPService>();
+            services.AddScoped<StackService>();
             services.AddScoped<IAlertService, AlertService>();
         }
 

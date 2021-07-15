@@ -8,6 +8,8 @@ namespace EmailView.Dtos
         public readonly IMessageSummary Summary;
         public MessageFlags Flags;
         public string FromSimple;
+        public string Category;
+        
 
         public MessageInfo(IMessageSummary summary)
         {
@@ -16,7 +18,15 @@ namespace EmailView.Dtos
             if (summary.Flags.HasValue)
                 Flags = summary.Flags.Value;
 
-            FromSimple = summary.Envelope.From.Mailboxes.FirstOrDefault().Name;
+            if (string.IsNullOrWhiteSpace(summary.Envelope.From.Mailboxes.FirstOrDefault().Name))
+            {
+                FromSimple = summary.Envelope.From.Mailboxes.FirstOrDefault().Address;
+            }
+            else
+            {
+                FromSimple = summary.Envelope.From.Mailboxes.FirstOrDefault().Name;
+            }
+
         }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EmailView.DataServices;
+using System.Net.Http;
+using System;
 
 namespace EmailView
 {
@@ -25,6 +27,11 @@ namespace EmailView
             services.AddSingleton<IMAPService>();
             services.AddScoped<StackService>();
             services.AddScoped<IAlertService, AlertService>();
+
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Configuration["rules_api_base_url"]) });
+
+            services.AddHttpClient<IRuleDataService, RuleService>
+                (spds => spds.BaseAddress = new Uri(Configuration["rules_api_base_url"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

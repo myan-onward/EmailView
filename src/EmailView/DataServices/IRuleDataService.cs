@@ -7,5 +7,6 @@ namespace EmailView.DataServices
     public interface IRuleDataService
     {
         Task<List<RuleDto>> GetAllRules();
+        Task<RuleDto> AddRule(string Name);
     }
 }

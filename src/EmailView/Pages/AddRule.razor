@@ -1,0 +1,140 @@
+@page "/addrule"
+
+@if (LoggedIn == false)
+{
+    <p>Not logged into a mailbox.</p>
+    <NavLink href="account/login" class="btn btn-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Login
+    </NavLink>
+}
+else
+{
+        <h2>New Rule Entry Form</h2>
+
+        <EditForm Model="@addedRule" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <p>
+                <label>
+                    Name: <InputText @bind-Value="ruleName" />
+                </label>
+            </p>
+            @* <p>
+                <label>
+                    Description (optional):
+                    <InputTextArea @bind-Value="starship.Description" />
+                </label>
+            </p>
+            <p>
+                <label>
+                    Primary Classification:
+                    <InputSelect @bind-Value="starship.Classification">
+                        <option value="">Select classification ...</option>
+                        <option value="Exploration">Exploration</option>
+                        <option value="Diplomacy">Diplomacy</option>
+                        <option value="Defense">Defense</option>
+                    </InputSelect>
+                </label>
+            </p>
+            <p>
+                <label>
+                    Maximum Accommodation:
+                    <InputNumber @bind-Value="starship.MaximumAccommodation" />
+                </label>
+            </p>
+            <p>
+                <label>
+                    Engineering Approval:
+                    <InputCheckbox @bind-Value="starship.IsValidatedDesign" />
+                </label>
+            </p>
+            <p>
+                <label>
+                    Production Date:
+                    <InputDate @bind-Value="starship.ProductionDate" />
+                </label>
+            </p> *@
+
+            <button type="submit">Submit</button>
+
+            <p>
+                <a href="http://www.startrek.com/">Star Trek</a>, 
+                &copy;1966-2019 CBS Studios, Inc. and 
+                <a href="https://www.paramount.com">Paramount Pictures</a>
+            </p>
+        </EditForm>
+
+    @if (addedRule != null && addedRule.Id < 1)
+    {
+        <p><em>Loading Rules...</em></p>
+    }
+    else
+    {
+        <p><em>Rule Id is @addedRule.Id</em></p>
+
+        @* <EditForm Model="@addedCondition" OnValidSubmit="@HandleConditionSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <p>
+                <label>
+                    Condition:
+                </label>
+            </p> 
+            <p>
+                <label>
+                    If:
+                    <InputSelect @bind-Value="addedCondition.AnyAll">
+                        <option value="any">any</option>
+                        <option value="all">all</option>
+                    </InputSelect>
+                    of the following conditions are met:
+                </label>
+            </p>
+            <p>
+                <label>
+                    Primary Classification:
+                    <InputSelect @bind-Value="addedCondition.OnThis">
+                        <option value="From">From</option>
+                        <option value="To">To</option>
+                        <option value="Cc">Cc</option>
+                        <option value="Subject">Subject</option>
+                    </InputSelect>
+                </label>
+            </p>
+
+            <button type="submit">Submit</button>
+        </EditForm>
+
+        <EditForm Model="@addedAction" OnValidSubmit="@HandleActionSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <p>
+                <label>
+                    Action:
+                </label>
+            </p> 
+            <p>
+                <label>
+                    Perform the following actions:
+                </label>
+            </p>
+            <p>
+                <label>
+                    <InputSelect @bind-Value="addedAction.OnThis">
+                        <option value="Move">Move message</option>
+                        <option value="Copy">Copy message</option>
+                        <option value="Delete">Delete message</option>                        
+                    </InputSelect>
+                    to mailbox:
+                    <InputSelect @bind-Value="addedAction.OnThis">
+                        <option value="">Inbox</option>                      
+                    </InputSelect>
+                </label>
+            </p>
+
+            <button type="submit">Submit</button>
+        </EditForm> *@
+    }
+}

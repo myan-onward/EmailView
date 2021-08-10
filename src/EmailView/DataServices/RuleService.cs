@@ -38,7 +38,34 @@ namespace EmailView.DataServices
                 return gqlData.Data.Rules;
             }
             return null;
+        }
 
+        public async Task<RuleDto> AddRule(string name)
+        {
+            var v = new { name = name };
+            var mutationObject = new {
+                query = @"mutation addRule($input:AddRuleInput!){ addRule(input: $input) {rule {id name}} }",
+                variables = new
+                {
+                    input = v
+                }
+            };
+
+            var ruleMutation = new StringContent(
+               JsonSerializer.Serialize(mutationObject),
+               Encoding.UTF8,
+               "application/json");
+
+            var response = await _httpclient.PostAsync("graphql", ruleMutation);
+
+            if(response.IsSuccessStatusCode)
+            {
+                var gqlData = await JsonSerializer.DeserializeAsync<GqlAddData>  
+                    (await response.Content.ReadAsStreamAsync());
+                
+                return gqlData.Data.Rule;
+            }
+            return null;
         }
     }
 }

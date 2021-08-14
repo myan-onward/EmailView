@@ -30,8 +30,17 @@ namespace EmailView.Dtos
         [JsonPropertyName("id")]
         public int Id {get; set;}
 
+        [JsonPropertyName("operator")]
+        public string Operator {get; set;}
+
+        [JsonPropertyName("condition")]
+        public string Condition {get; set;}
+
         [JsonPropertyName("onThis")]
         public string OnThis {get; set;}
+
+        [JsonPropertyName("ruleId")]
+        public int RuleId {get; set;}
     }
 
     public partial class ActionDto
@@ -39,7 +48,13 @@ namespace EmailView.Dtos
         [JsonPropertyName("id")]
         public int Id {get; set;}
 
+        [JsonPropertyName("actionType")]
+        public string ActionType {get; set;}
+
         [JsonPropertyName("directObject")]
         public string DirectObject {get; set;}
+
+        [JsonPropertyName("ruleId")]
+        public int RuleId {get; set;}
     }
 }

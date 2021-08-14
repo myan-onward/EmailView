@@ -1,0 +1,141 @@
+@page "/editrule/{ruleId}"
+
+@if (LoggedIn == false)
+{
+    <p>Not logged into a mailbox.</p>
+    <NavLink href="account/login" class="btn btn-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Login
+    </NavLink>
+}
+else
+{
+        <h2>Edit Rule Entry Form</h2>
+
+        <p><em>Rule Id is @ruleId</em></p>
+
+        @if(addedRule != null)
+        {
+            <p>Rule name: @addedRule.Name</p>
+        
+
+        <EditForm Model="@addedCondition" OnValidSubmit="@HandleConditionSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <p>
+                <label>
+                    If:
+                    <InputSelect @bind-Value="addedRule.RequireAllConditions">
+                        <option value="any">any</option>
+                        <option value="all">all</option>
+                    </InputSelect>
+                    of the following conditions are met:
+                </label>
+            </p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Condition</th>
+                        <th>Operator</th>
+                        <th>OnThis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Virtualize Items="@addedRule.Conditions" Context="cnd">
+                        <tr>
+                            <td>@cnd.Id</td>
+                            <td>@cnd.Condition</td>
+                            <td>@cnd.Operator</td>
+                            <td>@cnd.OnThis</td>
+                        </tr>
+                    </Virtualize>
+                </tbody>
+            </table>
+
+            <hr/>
+
+            <p>
+                <label>
+                    New Condition:
+                </label>
+            </p>             
+
+            <p>
+                <label>
+                    Primary Classification:
+                    <InputSelect @bind-Value="addedCondition.Condition">
+                        <option value="PEOPLE_FROM">From</option>
+                        <option value="PEOPLE_TO">To</option>
+                        <option value="PEOPLE_CC">Cc</option>
+                        <option value="RECIPIENT">any recipient</option>
+                        <option value="SUBJECT">Subject</option>
+                        <option value="PRIORITY_HIGH">High priority</option>
+                    </InputSelect>
+                </label>
+
+                <InputSelect @bind-Value="addedCondition.Operator">
+                        <option value="EQUALS">is equals to</option>
+                        <option value="CONTAINS">contains</option>
+                        <option value="DOES_NOT_CONTAIN">does not contain</option>
+                        <option value="STARTS_WITH">begins with</option>
+                        <option value="ENDS_WITH">ends with</option>
+                </InputSelect>
+
+                <InputText @bind-Value="addedCondition.OnThis" />
+            </p>
+
+            <button type="submit">Add Condition</button>
+        </EditForm>
+
+        <EditForm Model="@addedAction" OnValidSubmit="@HandleActionSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Action Type</th>
+                        <th>Direct Object</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Virtualize Items="@addedRule.Actions" Context="act">
+                        <tr>
+                            <td>@act.Id</td>
+                            <td>@act.ActionType</td>
+                            <td>@act.DirectObject</td>
+                        </tr>
+                    </Virtualize>
+                </tbody>
+            </table>
+
+            <p>
+                <label>
+                    Action:
+                </label>
+            </p> 
+            <p>
+                <label>
+                    Perform the following actions:
+                </label>
+            </p>
+            <p>
+                <label>
+                    <InputSelect @bind-Value="addedAction.ActionType">
+                        <option value="ORGANIZE_MOVE_TO">Move message</option>
+                        <option value="ORAGNIZE_COPY_TO">Copy message</option>
+                        <option value="ORGANIZE_DELETE">Delete message</option>
+                        <option value="MARK_AS_READ">Mark as Read</option>
+                        <option value="MARK_WITH_IMPORTANCE">Mark Important</option>
+                    </InputSelect>
+                    to mailbox:
+                    <InputText @bind-Value="addedAction.DirectObject" />
+                </label>
+            </p>
+
+            <button type="submit">Add Action</button>
+        </EditForm>
+        }
+}

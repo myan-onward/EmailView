@@ -33,11 +33,6 @@ namespace EmailView.Pages
             get { return MailService.IsAuthenticated; }
         }
 
-        protected override async Task OnInitializedAsync()
-        {
-            // rules = await RuleService.GetAllRules();
-        }
-
         private async void HandleValidSubmit()
         {
             Console.WriteLine("HandleValidSubmit called");
@@ -48,7 +43,7 @@ namespace EmailView.Pages
             {
                 addedRule = result;
                 // StateHasChanged();
-                // NavigationManager.NavigateTo("/roomzfront/1");
+                NavigationManager.NavigateTo($"/editrule/{result.Id}");
             }
         }
     }

@@ -10,6 +10,98 @@ namespace EmailView.DataServices
         // Stacks override the default email summary fields
         // const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Envelope | MessageSummaryItems.Flags | MessageSummaryItems.BodyStructure | MessageSummaryItems.Headers;
 
+        private bool OnCondition(string str, string op, string val)
+        {            
+                        switch (op)
+                        {
+                            case "EQUALS":
+                            if(str.Equals(val))
+                            {
+                                return true;
+                            }
+                            break;
+                            case "CONTAINS":
+                            if(str.Contains(val))
+                            {
+                                return true;                    
+                            }
+                            break;
+                            case "DOES_NOT_CONTAIN":
+                            if(str.Contains(val) == false)
+                            {
+                                return true;                       
+                            }
+                            break;
+                            case "STARTS_WITH":
+                            if(str.StartsWith(val))
+                            {
+                                return true;                     
+                            }
+                            break;
+                            case "ENDS_WITH":
+                            if(str.EndsWith(val))
+                            {
+                                return true;                     
+                            }
+                            break;                            
+                        }            
+                        return false;
+        }
+
+        public List<MessageInfo> MakeStack(List<ConditionDto> conditions)
+        {
+            List<MessageInfo> replyMsgs = new List<MessageInfo>();
+
+            foreach(var message in this.messages)
+            {
+                foreach(var condition in conditions)
+                {
+                    switch(condition.Condition)
+                    {
+                        case "PEOPLE_FROM":        
+                            if(message.Summary.Envelope.From.Mailboxes.Any(a => OnCondition(a.Address, condition.Operator, condition.OnThis)))
+                            {
+                                replyMsgs.Add(message);  
+                            }
+                            break;
+                        case "PEOPLE_TO":
+                        if(message.Summary.Envelope.To.Mailboxes.Any(a => OnCondition(a.Address, condition.Operator, condition.OnThis)))
+                            {
+                                replyMsgs.Add(message);                          
+                            }
+                        break;
+                        case "PEOPLE_CC":
+                        if(message.Summary.Envelope.Cc.Mailboxes.Any(a => OnCondition(a.Address, condition.Operator, condition.OnThis)))
+                            {
+                                replyMsgs.Add(message);                          
+                            }
+                        break;
+                        case "RECIPIENT":
+                          if(message.Summary.Envelope.To.Mailboxes.Any(a => OnCondition(a.Address, condition.Operator, condition.OnThis)))
+                            {
+                                replyMsgs.Add(message);                          
+                            }
+                            if(message.Summary.Envelope.Cc.Mailboxes.Any(a => OnCondition(a.Address, condition.Operator, condition.OnThis)))
+                            {
+                                replyMsgs.Add(message);                          
+                            }
+                        break;
+                        case "SUBJECT":
+                        if(message.Summary.Envelope.Subject.Contains(condition.OnThis))
+                        {
+                            replyMsgs.Add(message);     
+                        }
+                        break;
+                        case "PRIORITY_HIGH":
+                        
+                        break;
+                    }
+                }
+            }
+
+            return replyMsgs;
+        }
+
         public List<MessageInfo> MakeReplyStack()
         {
             List<MessageInfo> replyMsgs = new List<MessageInfo>();

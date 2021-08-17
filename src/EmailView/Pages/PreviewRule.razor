@@ -14,28 +14,6 @@ else
     }
     else
     {
-        @* <h4>Conditions of Rule @ruleId</h4>
-        <table class="table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Condition</th>
-                        <th>Operator</th>
-                        <th>OnThis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Virtualize Items="@previewRule.Conditions" Context="cnd">
-                        <tr>
-                            <td>@cnd.Id</td>
-                            <td>@cnd.Condition</td>
-                            <td>@cnd.Operator</td>
-                            <td>@cnd.OnThis</td>
-                        </tr>
-                    </Virtualize>
-                </tbody>
-            </table> *@
-
         <table class="table table-striped table-bordered table-hover table-sm">
             <thead><h4>Preview of Rule @ruleId</h4></thead>
             <tbody>

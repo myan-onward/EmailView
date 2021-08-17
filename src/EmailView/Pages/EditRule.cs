@@ -47,6 +47,18 @@ namespace EmailView.Pages
         {
             Console.WriteLine("HandleConditionSubmit called");
 
+            // set condition default based on razor defaults
+            if(string.IsNullOrWhiteSpace(addedCondition.Condition))
+            {
+                addedCondition.Condition = "PEOPLE_FROM";
+            }
+
+            // set action default based on razor defaults
+            if(string.IsNullOrWhiteSpace(addedCondition.Operator))
+            {
+                addedCondition.Operator = "EQUALS";
+            }
+
             // Process the valid form
             Int32.TryParse(ruleId, out int rid);
             var result = await RuleService.AddCondition(rid, addedCondition.Condition, addedCondition.Operator, addedCondition.OnThis);
@@ -71,6 +83,12 @@ namespace EmailView.Pages
         private async void HandleActionSubmit()
         {
             Console.WriteLine("HandleActionSubmit called");
+
+            // set action default based on razor defaults
+            if(string.IsNullOrWhiteSpace(addedAction.ActionType))
+            {
+                addedAction.ActionType = "ORGANIZE_MOVE_TO";
+            }
 
             // Process the valid form
             Int32.TryParse(ruleId, out int rid);

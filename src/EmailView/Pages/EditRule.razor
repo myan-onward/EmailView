@@ -23,11 +23,12 @@ else
 
             <p>
                 <label>
-                    If:
-                    <InputSelect @bind-Value="addedRule.RequireAllConditions">
+                    If ALL:
+                    <input name="RequireAllConditions" type="checkbox" value="@addedRule.RequireAllConditions" />
+                    @* <InputSelect @bind-Value="addedRule.RequireAllConditions">
                         <option value="any">any</option>
                         <option value="all">all</option>
-                    </InputSelect>
+                    </InputSelect> *@
                     of the following conditions are met:
                 </label>
             </p>

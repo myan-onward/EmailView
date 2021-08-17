@@ -20,7 +20,7 @@ namespace EmailView.DataServices
         public async Task<List<RuleDto>> GetAllRules()
         {
            var queryObject = new{
-            query  = @"{rules {id name shared requireAllConditions conditions {id onThis} actions {id directObject} }}",
+            query  = @"{rules {id name shared requireAllConditions conditions {id operator condition onThis} actions {id actionType directObject ruleId} }}",
             variables = new {}
            };
 
@@ -45,7 +45,7 @@ namespace EmailView.DataServices
         {
             var v = new { rid = id };
             var queryObject = new {
-                query = @"query ($rid: Int) { rules(where: {id: {eq: $rid}}) {id name shared requireAllConditions conditions {id operator condition onThis} actions {id directObject} } }",
+                query = @"query ($rid: Int) { rules(where: {id: {eq: $rid}}) {id name shared requireAllConditions conditions {id operator condition onThis} actions {id actionType directObject ruleId} } }",
                 variables = v
             };
 

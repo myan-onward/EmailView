@@ -15,101 +15,109 @@ else
     else
     {
         <p>
-            <a href="/addrule">Add a new Rule...</a>
-        </p>
+    <a href="/addrule">Add a new Rule...</a>
+</p>
         <table class="table table-striped table-bordered table-hover table-sm">
-            <thead><h4>Rules</h4></thead>
+            <thead>
+                <h4>Rules</h4>
+            </thead>
             <tbody>
                 <Virtualize Items="@rules" Context="rule">
                     <tr>
                         <td>
                             <div class="container">
                                 <div class="row align-items-start justify-content-start">
-                                    <div class="col-1">Rule Shared? 
+                                    <div class="col-1">
                                         @* <input asp-for="rule.Shared"> *@
-                                        <input name="IsShared" type="checkbox" value="@rule.Shared" />
-                                        </div>
+                                        <p>Rule Shared? <input name="IsShared" type="checkbox" value="@rule.Shared" /></p>
+                                        <p>All Conditions? <input name="RequireAllConditions" type="checkbox"
+                                        value="@rule.RequireAllConditions" /></p>
+                                    </div>
                                     <div class="col-6"><strong>Rule Name: @rule.Name</strong></div>
-                                    <div class="col-3">All Conditions? 
+                                    <div class="col-3">
                                         @* <input asp-for="rule.RequireAllConditions"> *@
-                                        <input name="RequireAllConditions" type="checkbox" value="@rule.RequireAllConditions" />
-                                        </div>
+                                        <button class="btn btn-sm" id="@rule.Id"
+                                    @onclick="@(e => HandleRuleDelete(rule.Id))">Delete</button>
+                                    </div>
                                 </div>
                                 <div class="row align-items-center justify-content-start">
                                     <div class="col-1"></div>
                                     <div class="col-6">
                                         <p class="lead">Conditions</p>
                                         @if (rule.Conditions == null)
+                                {
+                                    <p>No conditions (null).</p>
+                                }
+                                else
+                                {
+                                    @if (rule.Conditions.Count == 0)
+                                    {
+                                        <p>No conditions.</p>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var cond in rule.Conditions)
                                         {
-                                            <p>No conditions (null).</p>
+                        <tr>
+                            <td>
+                                <p>@cond.Id</p>
+                            </td>
+                            <td>
+                                <p>@cond.Operator</p>
+                            </td>
+                            <td>
+                                <p>@cond.OnThis</p>
+                            </td>
+
+                        </tr>
                                         }
-                                        else
+                                    }
+                                }
+            </div>
+            <div class="col-3">
+                <p>
+                    <a href="/editrule/@rule.Id">Edit</a>
+                </p>
+            </div>
+            </div>
+            <div class="row align-items-end justify-content-start">
+                <div class="col-1"><small class="text-muted">Rule ID: @rule.Id</small></div>
+                <div class="col-6">
+                    <p class="lead">Actions</p>
+                                @if (rule.Actions == null)
+                                {
+                        <p>No actions (null).</p>
+                                }
+                                else
+                                {
+                                    @if (rule.Actions.Count == 0)
+                                    {
+                            <p>No actions.</p>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var act in rule.Actions)
                                         {
-                                            @if(rule.Conditions.Count == 0)
-                                            {
-                                                <p>No conditions.</p>
-                                            }
-                                            else
-                                            {
-                                                @foreach (var cond in rule.Conditions)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            <p>@cond.Id</p>
-                                                            <p>@cond.Operator</p>
-                                                            <p>@cond.OnThis</p>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
-                                        }                                        
-                                    </div>
-                                    <div class="col-3">
-                                        <p>
-                                            <a href="/editrule/@rule.Id">Edit</a>
-                                        </p>                                        
-                                    </div>
-                                </div>
-                                <div class="row align-items-end justify-content-start">
-                                    <div class="col-1"><small class="text-muted">Rule ID: @rule.Id</small></div>
-                                    <div class="col-6">
-                                        <p class="lead">Actions</p>
-                                        @if (rule.Actions == null)
-                                        {
-                                            <p>No actions (null).</p>
+                                <tr>
+                                    <td><p>@act.Id</p></td>
+                                    <td><p>@act.ActionType</p></td>
+                                    <td><p>@act.DirectObject</p></td>                                    
+                                </tr>
                                         }
-                                        else
-                                        {
-                                            @if(rule.Actions.Count == 0)
-                                            {
-                                                <p>No actions.</p>
-                                            }
-                                            else
-                                            {
-                                                @foreach (var act in rule.Actions)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            <p>@act.Id</p>
-                                                            <p>@act.ActionType</p>
-                                                            <p>@act.DirectObject</p>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }                                        
-                                        }
-                                    </div>
-                                    <div class="col-3">
-                                        <p>
-                                            <a href="/previewrule/@rule.Id">Preview</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </Virtualize>
-            </tbody>
-        </table>
+                                    }
+                                }
+                </div>
+                <div class="col-3">
+                    <p>
+                        <a href="/previewrule/@rule.Id">Preview</a>
+                    </p>
+                </div>
+            </div>
+            </div>
+            </td>
+            </tr>
+        </Virtualize>
+    </tbody>
+</table>
     }
 }

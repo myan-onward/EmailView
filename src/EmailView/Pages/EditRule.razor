@@ -49,6 +49,7 @@ else
                             <td>@cnd.Condition</td>
                             <td>@cnd.Operator</td>
                             <td>@cnd.OnThis</td>
+                            <td><button class="btn btn-sm" id="@cnd.Id" @onclick="@(e => HandleConditionDelete(cnd.Id))">Delete</button></td>
                         </tr>
                     </Virtualize>
                 </tbody>
@@ -107,6 +108,7 @@ else
                             <td>@act.Id</td>
                             <td>@act.ActionType</td>
                             <td>@act.DirectObject</td>
+                            <td><button class="btn btn-sm" id="@act.Id" @onclick="@(e => HandleActionDelete(act.Id))">Delete</button></td>
                         </tr>
                     </Virtualize>
                 </tbody>

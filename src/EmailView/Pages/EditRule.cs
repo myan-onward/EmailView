@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EmailView.DataServices;
 using EmailView.Dtos;
@@ -48,13 +48,13 @@ namespace EmailView.Pages
             Console.WriteLine("HandleConditionSubmit called");
 
             // set condition default based on razor defaults
-            if(string.IsNullOrWhiteSpace(addedCondition.Condition))
+            if (string.IsNullOrWhiteSpace(addedCondition.Condition))
             {
                 addedCondition.Condition = "PEOPLE_FROM";
             }
 
             // set action default based on razor defaults
-            if(string.IsNullOrWhiteSpace(addedCondition.Operator))
+            if (string.IsNullOrWhiteSpace(addedCondition.Operator))
             {
                 addedCondition.Operator = "EQUALS";
             }
@@ -62,7 +62,7 @@ namespace EmailView.Pages
             // Process the valid form
             Int32.TryParse(ruleId, out int rid);
             var result = await RuleService.AddCondition(rid, addedCondition.Condition, addedCondition.Operator, addedCondition.OnThis);
-            if(result != null)
+            if (result != null)
             {
                 Console.WriteLine($"HandleConditionSubmit: Result (Condition) Id: {result.Id}");
                 addedRule.Conditions.Add(new ConditionDto()
@@ -72,11 +72,26 @@ namespace EmailView.Pages
                     Operator = result.Operator,
                     OnThis = result.OnThis,
                     RuleId = result.RuleId
-                });                
+                });
 
                 // addedRule = result;
                 StateHasChanged();
-                NavigationManager.NavigateTo("/editrule/{result.Id}");
+                // NavigationManager.NavigateTo("/editrule/{result.Id}");
+            }
+        }
+
+        private async void HandleConditionDelete(int conditionId)
+        {
+            int result = await RuleService.DeleteCondition(conditionId);
+            if (result != -1)
+            {
+                var removedItem = addedRule.Conditions.SingleOrDefault(x => x.Id == conditionId);
+
+                if (removedItem != null)
+                {
+                    addedRule.Conditions.Remove(removedItem);
+                    StateHasChanged();
+                }
             }
         }
 
@@ -85,7 +100,7 @@ namespace EmailView.Pages
             Console.WriteLine("HandleActionSubmit called");
 
             // set action default based on razor defaults
-            if(string.IsNullOrWhiteSpace(addedAction.ActionType))
+            if (string.IsNullOrWhiteSpace(addedAction.ActionType))
             {
                 addedAction.ActionType = "ORGANIZE_MOVE_TO";
             }
@@ -93,7 +108,7 @@ namespace EmailView.Pages
             // Process the valid form
             Int32.TryParse(ruleId, out int rid);
             var result = await RuleService.AddAction(rid, addedAction.ActionType, addedAction.DirectObject);
-            if(result != null)
+            if (result != null)
             {
                 Console.WriteLine($"HandleActionSubmit: Result (Action) Id: {result.Id}");
                 addedRule.Actions.Add(new ActionDto()
@@ -102,11 +117,27 @@ namespace EmailView.Pages
                     ActionType = result.ActionType,
                     DirectObject = result.DirectObject,
                     RuleId = result.RuleId
-                });                
+                });
 
                 // addedRule = result;
                 StateHasChanged();
-                NavigationManager.NavigateTo("/editrule/{result.Id}");
+                // NavigationManager.NavigateTo("/editrule/{result.Id}");
+            }
+        }
+
+        private async void HandleActionDelete(int actionId)
+        {
+            int result = await RuleService.DeleteAction(actionId);
+
+            if (result != -1)
+            {
+                var removedItem = addedRule.Actions.SingleOrDefault(x => x.Id == actionId);
+
+                if (removedItem != null)
+                {
+                    addedRule.Actions.Remove(removedItem);
+                    StateHasChanged();
+                }
             }
         }
     }

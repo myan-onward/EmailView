@@ -2,43 +2,72 @@
 
 @if (LoggedIn == false)
 {
-    <p>Not logged into a mailbox.</p>
-    <NavLink href="account/login" class="btn btn-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Login
-    </NavLink>
+    <div class="card">
+        <div class="card-header">
+            Email Rules
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><span class="oi oi-lock-locked" aria-hidden="true"></span> Not logged into mailbox.</h5>
+            <p class="card-text">Sign into your mailbox and we can get to work!</p>
+            <a href="/account/login" class="btn btn-primary"><span class="oi oi-account-login" aria-hidden="true"></span> Login</a>
+        </div>
+    </div>
 }
 else
 {
-    @if (messages == null)
+    @if (messages == null || messages.Count == 0)
     {
-        <p><em>Loading emails...</em></p>
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title"><span class="oi oi-clock" aria-hidden="true"></span> Applying rule and Retrieving emails</h5>
+                <p class="card-text">Please wait...</p>
+            </div>
+        </div>
     }
     else
     {
-        <table class="table table-striped table-bordered table-hover table-sm">
-            <thead><h4>Preview of Rule @ruleId</h4></thead>
-            <tbody>
-                <Virtualize Items="@previewMsgs" Context="mi">
-                    <tr>
-                        <td>
-                            <div class="container">
-                                <div class="row align-items-start justify-content-start">
-                                    <div class="col-1"></div>
-                                    <div class="col-6"><strong>@mi.FromSimple</strong></div>
-                                    <div class="col-3">@mi.Summary.Envelope.Date</div>
-                                </div>
-                                <div class="row align-items-center justify-content-start">
-                                    <div class="col-1"></div>
-                                    <div class="col-9"><p class="lead">@mi.Summary.Envelope.Subject</p></div>
-                                </div>
-                                <div class="row align-items-end justify-content-start">
-                                    <div class="col-1"><small class="text-muted">@mi.Summary.UniqueId</small></div>
-                                    <div class="col-9"><p class="text-muted">...Preview Text...</p></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </Virtualize>
-            </tbody>
-        </table>       
+        @if(previewMsgs == null || previewMsgs.Count == 0)
+        {
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title"><span class="oi oi-warning" aria-hidden="true"></span> Rule has filtered.</h5>
+                    <p class="card-text">You may want to adjust Conditions for this rule, no emails to preview.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><span class="oi oi-envelope" aria-hidden="true"></span>Preview</h5>
+                    <table class="table table-striped table-bordered table-hover table-sm">
+                        @* <thead><h4>Preview of Rule @ruleId</h4></thead> *@
+                        <tbody>
+                            <Virtualize Items="@previewMsgs" Context="mi">
+                                <tr>
+                                    <td>
+                                        <div class="container">
+                                            <div class="row align-items-start justify-content-start">
+                                                <div class="col-1"></div>
+                                                <div class="col-6"><strong>@mi.FromSimple</strong></div>
+                                                <div class="col-3">@mi.Summary.Envelope.Date</div>
+                                            </div>
+                                            <div class="row align-items-center justify-content-start">
+                                                <div class="col-1"></div>
+                                                <div class="col-9"><p class="lead">@mi.Summary.Envelope.Subject</p></div>
+                                            </div>
+                                            <div class="row align-items-end justify-content-start">
+                                                <div class="col-1"><small class="text-muted">@mi.Summary.UniqueId</small></div>
+                                                <div class="col-9"><p class="text-muted">...Preview Text...</p></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </Virtualize>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
     }
 }

@@ -2,143 +2,171 @@
 
 @if (LoggedIn == false)
 {
-    <p>Not logged into a mailbox.</p>
-    <NavLink href="account/login" class="btn btn-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Login
-    </NavLink>
+    <div class="card">
+        <div class="card-header">
+            Email Rules
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><span class="oi oi-lock-locked" aria-hidden="true"></span> Not logged into mailbox.</h5>
+            <p class="card-text">Sign into your mailbox and we can get to work!</p>
+            <a href="/account/login" class="btn btn-primary"><span class="oi oi-account-login" aria-hidden="true"></span> Login</a>
+        </div>
+    </div>
 }
 else
 {
-        <h2>Edit Rule Entry Form</h2>
+    if(addedRule == null)
+    {
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title"><span class="oi oi-clock" aria-hidden="true"></span> Retrieving Rule</h5>
+                <p class="card-text">Please wait...</p>                
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                @* <h5 class="card-title"><span class="oi oi-pencil" aria-hidden="true"></span> Edit Rule (@ruleId)</h5> *@
+                <h5 class="card-title"><span class="oi oi-pencil" aria-hidden="true"></span> @addedRule.Name</h5>
+                <p class="card-text">You choose both the conditions that trigger a rule and the actions the rule will take.</p>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><span class="oi oi-list aria-hidden="true"></span> Conditions</h5>
+                        <p class="card-text">
+                            <label>
+                                <input name="RequireAllConditions" type="checkbox" value="@addedRule.RequireAllConditions" /> If ALL
+                                of the following conditions are met:
+                            </label>
+                        </p>
+                        
+                        @if(addedRule.Conditions.Count == 0)
+                        {
+                            <p class="text-muted">You haven't created any conditions yet.</p>    
+                        }
+                        else
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        @* <th>Id</th> *@
+                                        <th>Condition</th>
+                                        <th>Operator</th>
+                                        <th>OnThis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <Virtualize Items="@addedRule.Conditions" Context="cnd">
+                                        <tr>
+                                            @* <td>@cnd.Id</td> *@
+                                            <td>@cnd.Condition</td>
+                                            <td>@cnd.Operator</td>
+                                            <td>@cnd.OnThis</td>
+                                            <td><button class="btn btn-sm btn-danger" id="@cnd.Id" @onclick="@(e => HandleConditionDelete(cnd.Id))"><span class="oi oi-trash" aria-hidden="true"></span> Delete</button></td>
+                                        </tr>
+                                    </Virtualize>
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
 
-        <p><em>Rule Id is @ruleId</em></p>
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title"><span class="oi oi-plus aria-hidden="true"></span> Add new condition:</h5>
+                        
+                        <EditForm Model="@addedCondition" OnValidSubmit="@HandleConditionSubmit">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />     
 
-        @if(addedRule != null)
-        {
-            <p>Rule name: @addedRule.Name</p>
-        
+                            <p>                        
+                                <InputSelect @bind-Value="addedCondition.Condition">
+                                    <option value="PEOPLE_FROM">From</option>
+                                    <option value="PEOPLE_TO">To</option>
+                                    <option value="PEOPLE_CC">Cc</option>
+                                    <option value="RECIPIENT">Any recipient</option>
+                                    <option value="SUBJECT">Subject</option>
+                                    <option value="PRIORITY_HIGH">High priority</option>
+                                </InputSelect>
 
-        <EditForm Model="@addedCondition" OnValidSubmit="@HandleConditionSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+                                <InputSelect @bind-Value="addedCondition.Operator">
+                                        <option value="EQUALS">is equals to</option>
+                                        <option value="CONTAINS">contains</option>
+                                        <option value="DOES_NOT_CONTAIN">does not contain</option>
+                                        <option value="STARTS_WITH">begins with</option>
+                                        <option value="ENDS_WITH">ends with</option>
+                                </InputSelect>
 
-            <p>
-                <label>
-                    If ALL:
-                    <input name="RequireAllConditions" type="checkbox" value="@addedRule.RequireAllConditions" />
-                    @* <InputSelect @bind-Value="addedRule.RequireAllConditions">
-                        <option value="any">any</option>
-                        <option value="all">all</option>
-                    </InputSelect> *@
-                    of the following conditions are met:
-                </label>
-            </p>
+                                <InputText @bind-Value="addedCondition.OnThis" />
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Condition</th>
-                        <th>Operator</th>
-                        <th>OnThis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Virtualize Items="@addedRule.Conditions" Context="cnd">
-                        <tr>
-                            <td>@cnd.Id</td>
-                            <td>@cnd.Condition</td>
-                            <td>@cnd.Operator</td>
-                            <td>@cnd.OnThis</td>
-                            <td><button class="btn btn-sm" id="@cnd.Id" @onclick="@(e => HandleConditionDelete(cnd.Id))">Delete</button></td>
-                        </tr>
-                    </Virtualize>
-                </tbody>
-            </table>
+                                <button class="btn btn-sm btn-success" type="submit"><span class="oi oi-circle-check aria-hidden="true"></span> OK</button>
+                            </p>                            
+                        </EditForm>
+                    </div>
+                </div>
 
-            <hr/>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><span class="oi oi-list aria-hidden="true"></span> Actions</h5>
 
-            <p>
-                <label>
-                    New Condition:
-                </label>
-            </p>             
+                        @if(addedRule.Actions.Count == 0)
+                        {
+                            <p class="text-muted">You haven't created any actions yet.</p>    
+                        }
+                        else
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        @* <th>Id</th> *@
+                                        <th>Action Type</th>
+                                        <th>Direct Object</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <Virtualize Items="@addedRule.Actions" Context="act">
+                                        <tr>
+                                            @* <td>@act.Id</td> *@
+                                            <td>@act.ActionType</td>
+                                            <td>@act.DirectObject</td>
+                                            <td><button class="btn btn-sm btn-danger" id="@act.Id" @onclick="@(e => HandleActionDelete(act.Id))"><span class="oi oi-trash" aria-hidden="true"></span> Delete</button></td>
+                                        </tr>
+                                    </Virtualize>
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
 
-            <p>
-                <label>
-                    Primary Classification:
-                    <InputSelect @bind-Value="addedCondition.Condition">
-                        <option value="PEOPLE_FROM">From</option>
-                        <option value="PEOPLE_TO">To</option>
-                        <option value="PEOPLE_CC">Cc</option>
-                        <option value="RECIPIENT">any recipient</option>
-                        <option value="SUBJECT">Subject</option>
-                        <option value="PRIORITY_HIGH">High priority</option>
-                    </InputSelect>
-                </label>
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title"><span class="oi oi-plus aria-hidden="true"></span> Add new action:</h5>
 
-                <InputSelect @bind-Value="addedCondition.Operator">
-                        <option value="EQUALS">is equals to</option>
-                        <option value="CONTAINS">contains</option>
-                        <option value="DOES_NOT_CONTAIN">does not contain</option>
-                        <option value="STARTS_WITH">begins with</option>
-                        <option value="ENDS_WITH">ends with</option>
-                </InputSelect>
+                        <EditForm Model="@addedAction" OnValidSubmit="@HandleActionSubmit">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
 
-                <InputText @bind-Value="addedCondition.OnThis" />
-            </p>
+                            <p>
+                                <InputSelect @bind-Value="addedAction.ActionType">
+                                    <option value="ORGANIZE_MOVE_TO">Move message</option>
+                                    <option value="ORAGNIZE_COPY_TO">Copy message</option>
+                                    <option value="ORGANIZE_DELETE">Delete message</option>
+                                    <option value="MARK_AS_READ">Mark as Read</option>
+                                    <option value="MARK_WITH_IMPORTANCE">Mark Important</option>
+                                </InputSelect>
 
-            <button type="submit">Add Condition</button>
-        </EditForm>
+                                to mailbox:
 
-        <EditForm Model="@addedAction" OnValidSubmit="@HandleActionSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+                                <InputText @bind-Value="addedAction.DirectObject" />
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Action Type</th>
-                        <th>Direct Object</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Virtualize Items="@addedRule.Actions" Context="act">
-                        <tr>
-                            <td>@act.Id</td>
-                            <td>@act.ActionType</td>
-                            <td>@act.DirectObject</td>
-                            <td><button class="btn btn-sm" id="@act.Id" @onclick="@(e => HandleActionDelete(act.Id))">Delete</button></td>
-                        </tr>
-                    </Virtualize>
-                </tbody>
-            </table>
-
-            <p>
-                <label>
-                    Action:
-                </label>
-            </p> 
-            <p>
-                <label>
-                    Perform the following actions:
-                </label>
-            </p>
-            <p>
-                <label>
-                    <InputSelect @bind-Value="addedAction.ActionType">
-                        <option value="ORGANIZE_MOVE_TO">Move message</option>
-                        <option value="ORAGNIZE_COPY_TO">Copy message</option>
-                        <option value="ORGANIZE_DELETE">Delete message</option>
-                        <option value="MARK_AS_READ">Mark as Read</option>
-                        <option value="MARK_WITH_IMPORTANCE">Mark Important</option>
-                    </InputSelect>
-                    to mailbox:
-                    <InputText @bind-Value="addedAction.DirectObject" />
-                </label>
-            </p>
-
-            <button type="submit">Add Action</button>
-        </EditForm>
-        }
+                                <button class="btn btn-sm btn-success" type="submit"><span class="oi oi-circle-check aria-hidden="true"></span> OK</button>
+                            </p>
+                        </EditForm>
+                    </div>
+                </div>        
+            </div>
+        </div>
+    }
 }

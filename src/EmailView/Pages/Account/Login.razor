@@ -69,7 +69,8 @@
         {
             await MailService.Login(model);
             var returnUrl = NavigationManager.QueryString("returnUrl") ?? "";
-            NavigationManager.NavigateTo(returnUrl);
+            //NavigationManager.NavigateTo(returnUrl);
+            NavigationManager.NavigateTo("/rules");
         }
         catch (Exception ex)
         {

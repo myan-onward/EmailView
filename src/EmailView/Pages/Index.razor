@@ -5,8 +5,16 @@
 
 @if (LoggedIn == false)
 {
-    <p>Not logged into a mailbox.</p>
-    <NavLink href="account/login" class="btn btn-link">Login</NavLink>
+    <div class="card">
+        <div class="card-header">
+            Email Rules
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><span class="oi oi-lock-locked" aria-hidden="true"></span> Not logged into mailbox.</h5>
+            <p class="card-text">Sign into your mailbox and we can get to work!</p>
+            <a href="/account/login" class="btn btn-primary"><span class="oi oi-account-login" aria-hidden="true"></span> Login</a>
+        </div>
+    </div>
 }
 else
 {
